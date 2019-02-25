@@ -7,6 +7,15 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 
+<style>
+        .gridlines .domain {
+            stroke: none;
+        }
+    
+        .gridlines line {
+            stroke: #ccc;
+        }
+    </style>
 
 <body>
     <div>
@@ -14,7 +23,7 @@
         <h2 style="text-align: center;">Project 1</h2>
 
         <!-- Bar Charts -->
-        <svg id="plot" height="600" width="1000" style="border: 1px black solid">
+        <svg id="plot" height="800" width="1800" style="border: 1px black solid">
         </svg>
 
         <script>
@@ -25,9 +34,9 @@
             // This is a clever way to do padding that is more adjustable when you are designing
             let margin = {
                 "top": 10,
-                "right": 10,
-                "bottom": 40,
-                "left": 80
+                "right": 40,
+                "bottom": 80,
+                "left": 50
             };
 
             let chartWidth = width - margin.left - margin.right;
@@ -39,20 +48,120 @@
                 console.log(data.length);
 
 
-                data.forEach((d, i) => {
-                    d["license"] = Number(d["Wholesaler License Serial Number"]);
-                    d["lat"] = Number(d["Latitude"]);
-                    d["long"] = Number(d["Longitude"]);
+                // data.forEach((d, i) => {
+                //     d["license"] = Number(d["Wholesaler License Serial Number"]);
+                //     d["lat"] = Number(d["Latitude"]);
+                //     d["long"] = Number(d["Longitude"]);
 
-                    data = data.filter(d => d['lat'] != 0 && d['long'] != 0);
+                //     data = data.filter(d => d['lat'] != 0 && d['long'] != 0);
 
-                });
+                // });
 
 
                 console.log(data);
                 console.log(data.length);
 
 
+
+
+
+
+                let drinks = d3.nest()
+                    .key(d => d['License Class Description']).sortKeys(d3.ascending)
+                    .rollup(l => l.length)
+                    .entries(data);
+                console.log(drinks);
+
+
+
+
+                //Scales
+                const drinkMin = d3.min(drinks, d => d['value']);
+                const drinkMax = d3.max(drinks, d => d['value']);
+                const drinkScale = d3.scaleLog() //Y Axis
+                    .domain([drinkMin+1, drinkMax+1])
+                    .range([chartHeight, 0]);
+
+                console.log(drinkMin);
+                console.log(drinkMax);
+
+
+
+
+                const typeScale = d3.scaleLinear() //Y Axis
+                    .domain([0, drinks.length-1])
+                    .range([0, chartWidth]);
+
+
+                const colorScale = d3.scaleOrdinal(d3.schemePaired);
+
+
+
+                //Axis
+
+                let yAxis = d3.axisLeft(drinkScale).ticks(12, d3.format(".01s"));  // Y axis
+                svg.append("g")
+                    .attr("class", "y axis")
+                    .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+                    .style("stroke-width", "2px")
+                    .style("font-size", "15px")
+                    .call(yAxis);
+
+
+                let xAxis = d3.axisBottom(typeScale).tickFormat("").ticks(22).tickSize(40);
+                svg.append("g")
+                    .attr("class", "x axis") // X axis
+                    .attr("transform", "translate(" + (margin.left + 20) + "," + (margin.top + chartHeight + 10) + ")")
+                    .style("stroke-width", "2px")
+                    .call(xAxis);
+
+
+                //Gridlines
+                let yGridlines = d3.axisLeft(drinkScale).ticks(8).tickSize(-chartWidth - 10).tickFormat("");
+                svg.append("g")
+                    .attr("class", "y gridlines") // Y axis
+                    .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+                    .call(yGridlines);
+
+
+                let xGridlines = d3.axisBottom(typeScale).tickSize(-chartHeight - 10).tickFormat("");
+                svg.append("g")
+                    .attr("class", "x gridlines") // X axis
+                    .attr("transform", "translate(" + (margin.left + 20) + "," + (margin.top + chartHeight + 10) + ")")
+                    .call(xGridlines);
+
+
+                let barplot = svg.append("g")
+                    .attr("transform", "translate(" + (margin.left + 20) + "," + margin.top + ")");
+
+
+
+                drinks.forEach(function (d, i) {
+                    console.log(d["value"]);
+                    console.log(drinkScale(d["value"]));
+                    barplot.append("line")
+                        .attr("x1", typeScale(i) )
+                        .attr("x2", typeScale(i) )
+                        .attr("y1", chartHeight)
+                        .attr("y2", drinkScale(d["value"]))
+                        .style("stroke", "blue")
+                        .style("stroke-width", 30);
+                    let text = barplot.append("text");
+                    text.attr("class", "type")
+                            .text(d['key'])
+                            .attr("x", typeScale(i)-(d["key"].length*5))
+                          //  .attr("y", chartHeight+30)
+                            .attr("font-size", "15px")
+                            .style("fill", "green");    
+                    if (i%2 === 1) {
+                        text.attr("y", chartHeight+60);
+                        xGridlines.tickSize(40);
+                    }    
+                    else {
+                        text.attr("y", chartHeight+35)
+                    }
+                console.log(d["key"].length);        
+                });
 
 
             });
