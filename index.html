@@ -48,14 +48,14 @@
                 console.log(data.length);
 
 
-                // data.forEach((d, i) => {
-                //     d["license"] = Number(d["Wholesaler License Serial Number"]);
-                //     d["lat"] = Number(d["Latitude"]);
-                //     d["long"] = Number(d["Longitude"]);
+                data.forEach((d, i) => {
+                    d["license"] = Number(d["Wholesaler License Serial Number"]);
+                    d["lat"] = Number(d["Latitude"]);
+                    d["long"] = Number(d["Longitude"]);
 
-                //     data = data.filter(d => d['lat'] != 0 && d['long'] != 0);
+                    data = data.filter(d => d['lat'] != 0 && d['long'] != 0);
 
-                // });
+                });
 
 
                 console.log(data);
