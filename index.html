@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Project 1</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+
+<body>
+    <div>
+
+        <h2 style="text-align: center;">Project 1</h2>
+
+        <!-- Bar Charts -->
+        <svg id="plot" height="600" width="1000" style="border: 1px black solid">
+        </svg>
+
+        <script>
+            let svg = d3.select("svg#plot");
+            let width = svg.attr("width");
+            let height = svg.attr("height");
+
+            // This is a clever way to do padding that is more adjustable when you are designing
+            let margin = {
+                "top": 10,
+                "right": 10,
+                "bottom": 40,
+                "left": 80
+            };
+
+            let chartWidth = width - margin.left - margin.right;
+            let chartHeight = height - margin.top - margin.bottom;
+
+
+            let data_array = d3.csv("combined.csv").then(function (data) {
+                console.log(data);
+                console.log(data.length);
+
+
+                data.forEach((d, i) => {
+                    d["license"] = Number(d["Wholesaler License Serial Number"]);
+                    d["lat"] = Number(d["Latitude"]);
+                    d["long"] = Number(d["Longitude"]);
+
+                    data = data.filter(d => d['lat'] != 0 && d['long'] != 0);
+
+                });
+
+
+                console.log(data);
+                console.log(data.length);
+
+
+
+
+            });
+        </script>
+    </div>
+
+
+
+</body>
+
+</html>
