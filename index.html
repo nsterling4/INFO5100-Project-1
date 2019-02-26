@@ -34,7 +34,7 @@
             // This is a clever way to do padding that is more adjustable when you are designing
             let margin = {
                 "top": 10,
-                "right": 40,
+                "right": 100,
                 "bottom": 80,
                 "left": 50
             };
@@ -48,14 +48,14 @@
                 console.log(data.length);
 
 
-                data.forEach((d, i) => {
-                    d["license"] = Number(d["Wholesaler License Serial Number"]);
-                    d["lat"] = Number(d["Latitude"]);
-                    d["long"] = Number(d["Longitude"]);
+                // data.forEach((d, i) => {
+                //     d["license"] = Number(d["Wholesaler License Serial Number"]);
+                //     d["lat"] = Number(d["Latitude"]);
+                //     d["long"] = Number(d["Longitude"]);
 
-                    data = data.filter(d => d['lat'] != 0 && d['long'] != 0);
+                //     data = data.filter(d => d['lat'] != 0 && d['long'] != 0);
 
-                });
+                // });
 
 
                 console.log(data);
@@ -68,6 +68,7 @@
 
                 let drinks = d3.nest()
                     .key(d => d['License Class Description']).sortKeys(d3.ascending)
+                    .key(d => d['Domestic or Imported'])
                     .rollup(l => l.length)
                     .entries(data);
                 console.log(drinks);
@@ -76,12 +77,14 @@
 
 
                 //Scales
-                const drinkMin = d3.min(drinks, d => d['value']);
-                const drinkMax = d3.max(drinks, d => d['value']);
+                const drinkMin = d3.min(drinks, d => ((d["values"][0]["value"]) + (d["values"][1]["value"])));
+                const drinkMax = d3.max(drinks, d => ((d["values"][0]["value"]) + (d["values"][1]["value"])));
                 const drinkScale = d3.scaleLog() //Y Axis
-                    .domain([drinkMin+1, drinkMax+1])
+                    .domain([1, drinkMax])
                     .range([chartHeight, 0]);
 
+               
+                
                 console.log(drinkMin);
                 console.log(drinkMax);
 
@@ -108,7 +111,7 @@
                     .call(yAxis);
 
 
-                let xAxis = d3.axisBottom(typeScale).tickFormat("").ticks(22).tickSize(40);
+                let xAxis = d3.axisBottom(typeScale).tickFormat("").ticks(22).tickSize(10);
                 svg.append("g")
                     .attr("class", "x axis") // X axis
                     .attr("transform", "translate(" + (margin.left + 20) + "," + (margin.top + chartHeight + 10) + ")")
@@ -117,7 +120,7 @@
 
 
                 //Gridlines
-                let yGridlines = d3.axisLeft(drinkScale).ticks(8).tickSize(-chartWidth - 10).tickFormat("");
+                let yGridlines = d3.axisLeft(drinkScale).ticks(8).tickSize(-chartWidth - 30).tickFormat("");
                 svg.append("g")
                     .attr("class", "y gridlines") // Y axis
                     .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
@@ -135,21 +138,37 @@
                     .attr("transform", "translate(" + (margin.left + 20) + "," + margin.top + ")");
 
 
+                   // console.log(chartHeight);
 
                 drinks.forEach(function (d, i) {
-                    console.log(d["value"]);
-                    console.log(drinkScale(d["value"]));
+                    // console.log(d["values"]);
+                    let test = (d["values"][0]["value"]);
+                    console.log(test);
+                    console.log(drinkScale(test));
+
+                    console.log(d["values"][1]["value"]);
+                    console.log(drinkScale(d["values"][1]["value"]));
+
+                   //console.log(d["value"]);
+                    //console.log(drinkScale(d["value"]));
                     barplot.append("line")
                         .attr("x1", typeScale(i) )
                         .attr("x2", typeScale(i) )
                         .attr("y1", chartHeight)
-                        .attr("y2", drinkScale(d["value"]))
+                        .attr("y2", drinkScale(d["values"][0]["value"]))
                         .style("stroke", "blue")
                         .style("stroke-width", 30);
+                    barplot.append("line")
+                    .attr("x1", typeScale(i) )
+                    .attr("x2", typeScale(i) )
+                    .attr("y1", drinkScale((d["values"][0]["value"])))
+                    .attr("y2", drinkScale(   (d["values"][0]["value"]) + (d["values"][1]["value"])  ))
+                    .style("stroke", "red")
+                    .style("stroke-width", 30);
                     let text = barplot.append("text");
                     text.attr("class", "type")
                             .text(d['key'])
-                            .attr("x", typeScale(i)-(d["key"].length*5))
+                            .attr("x", typeScale(i)-(d["key"].length*4))
                           //  .attr("y", chartHeight+30)
                             .attr("font-size", "15px")
                             .style("fill", "green");    
@@ -159,8 +178,7 @@
                     }    
                     else {
                         text.attr("y", chartHeight+35)
-                    }
-                console.log(d["key"].length);        
+                    }  
                 });
 
 
