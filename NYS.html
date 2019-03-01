@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+<!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>  -->
+<script src="https://d3js.org/d3.v5.min.js"></script>  
+<!-- <script src="https://d3js.org/d3-array.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo.v1.min.js"></script> -->
+<style type="text/css">
+
+/* On mouse hover, lighten state color */
+path:hover {
+	fill-opacity: .7;
+}
+
+/* Style for Custom Tooltip */
+div.tooltip {   
+ 	position: absolute;           
+	text-align: center;           
+	width: 60px;                  
+	height: 28px;                 
+	padding: 2px;             
+	font: 12px sans-serif;        
+	background: white;   
+	border: 0px;      
+	border-radius: 8px;           
+	pointer-events: none;         
+}
+        
+/* Legend Font Style */
+body {
+	font: 11px sans-serif;
+}
+        
+/* Legend Position Style */
+/*.legend {
+	position:absolute;
+	left:800px;
+	top:350px;
+}*/
+
+</style>
+</head>
+<body>
+	 <svg id="map" height="800" width="1800" style="border: 1px black solid"> </svg>
+
+<script type="text/javascript">
+	
+		
+//Width and height of map
+var width = 1500//960;
+var height = 500;
+console.log("start");
+// D3 Projection //d3.geo.albersUsa()
+var projection = d3.geoAlbersUsa()
+				   .translate([0, 700])    // translate to center of screen
+				   .scale([3500]);          // scale things down so see entire US
+        
+// Define path generator
+//geo.path()  
+
+var path = d3.geoPath()               // path generator that will convert GeoJSON to SVG paths
+		  	 .projection(projection);  // tell path generator to use albersUsa projection
+
+var svg = d3.select("#map")
+			.append("svg")
+			.attr("width", width)
+			.attr("height", height);
+
+	// svg.append("circle")
+	// 	.attr("cx",width/2)
+	// 	.attr("cy",height/2)
+	// 	.attr("r",5)
+	// 	.style("fill","red");
+
+// Append Div for tooltip to SVG
+// var div = d3.select("body")
+// 		    .append("div")   
+//     		.attr("class", "tooltip")               
+//     		.style("opacity", 0.5);
+  console.log("pronyc:"+projection([30,74]));
+
+
+// Load in my states data!
+//d3.csv("stateslived.csv", function(data) {
+//color.domain([0,1,2,3]); // setting the range of the input data
+ let data_array = d3.csv("combined.csv").then(function (data) {
+ 	console.log(data);
+ 	console.log("data length:"+data.length);
+ 	console.log("dataLati:"+data[0].Latitude);
+ 	console.log("dataLongi:"+data[0].Longitude);
+ 	var nyc = [10,-74.0];
+	var proNyc = projection([data[0].Latitude,data[0].Longitude]);
+	
+	console.log("pronyc:"+proNyc);
+
+// Load GeoJSON data and merge with states data
+//d3.json("us-states.json", function(json) {
+d3.json("us-states.json").then(function(json) {
+	//console.log("hello:"+json);
+	console.log(json.features[0]);
+
+
+	// for (var j = 0; j < json.features.length; j++)  {
+	// 	console.log(json.features.length);
+	// 	}
+
+svg.selectAll("path")
+	.data(json.features)
+	.enter()
+	.append("path")
+	.attr("d", path)
+	.style("stroke","black")
+	//.style("stroke", "#fff")
+	.style("stroke-width", "2")
+	.attr("fill", "none");
+
+});
+
+//var projection1 = d3.geoMercator().scale(3000).translate([0,700]);
+//var path1 = d3.geoPath().projection(projection1);
+
+
+	// svg.append("circle")
+	// 	.attr("class","point")
+	// 	.attr("cx",proNyc[0])
+	// 	.attr("cy",proNyc[1])
+	// 	.attr("r",5)
+	// 	.style("fill","blue");
+
+
+});
+
+
+
+
+</script>
+</body>
+</html>
+
