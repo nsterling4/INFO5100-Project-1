@@ -161,12 +161,12 @@ svg1.selectAll("path")
 	.append("circle")
 	.attr("cx", function(d) {
 		
-		return Math.floor(projection([d.Longitude, d.Latitude])[0]+Math.random()+5);
+		return Math.floor(projection([d.Longitude, d.Latitude])[0]+((Math.random() * 8) - 4));
 	})
 	.attr("cy", function(d) {
-		return Math.floor(projection([d.Longitude, d.Latitude])[1]+Math.random()+5);
+		return Math.floor(projection([d.Longitude, d.Latitude])[1]+((Math.random() * 8) - 4));
 	})
-	.attr("r",2)
+	.attr("r",1)
 	.style("fill", function(d){
 
 		if(d["Domestic or Imported"]=="D"){
@@ -174,26 +174,26 @@ svg1.selectAll("path")
 		}else
 			return "rgb(217,91,67)";
 	})
-	.style("opacity", 0.3);
+	.style("opacity", 0.1);
 
 
 	data2 = data.filter(d=>Boolean(d["License Class Description"]=="WHISKEY"));
 	data3 = data.filter(d=>Boolean(d["License Class Description"]=="NO FEE BEER"));
 
 	
-
+console.log(data2);
 	svg2.selectAll("circle")
 	.data(data2)
 	.enter()
 	.append("circle")
 	.attr("cx", function(d) {
 		
-		return Math.floor(projection([d.Longitude, d.Latitude])[0]+Math.random()+5);
+		return Math.floor(projection([d.Longitude, d.Latitude])[0]+((Math.random() * 8) - 4));
 	})
 	.attr("cy", function(d) {
-		return Math.floor(projection([d.Longitude, d.Latitude])[1]+Math.random()+5);
+		return Math.floor(projection([d.Longitude, d.Latitude])[1]+((Math.random() * 8) - 4));
 	})
-	.attr("r",2)
+	.attr("r",1)
 	.style("fill", function(d){
 
 		if(d["Domestic or Imported"]=="D"){
@@ -201,7 +201,7 @@ svg1.selectAll("path")
 		}else
 			return "rgb(217,91,67)";
 	})
-	.style("opacity", 0.3);
+	.style("opacity", 0.2);
 
 	
 	svg3.selectAll("circle")
@@ -210,12 +210,12 @@ svg1.selectAll("path")
 	.append("circle")
 	.attr("cx", function(d) {
 		
-		return Math.floor(projection([d.Longitude, d.Latitude])[0]+Math.random()+5);
+		return Math.floor(projection([d.Longitude, d.Latitude])[0]+((Math.random() * 8) - 4));
 	})
 	.attr("cy", function(d) {
-		return Math.floor(projection([d.Longitude, d.Latitude])[1]+Math.random()+5);
+		return Math.floor(projection([d.Longitude, d.Latitude])[1]+((Math.random() * 8) - 4));
 	})
-	.attr("r",2)
+	.attr("r",1)
 	.style("fill", function(d){
 
 		if(d["Domestic or Imported"]=="D"){
@@ -223,7 +223,7 @@ svg1.selectAll("path")
 		}else
 			return "rgb(217,91,67)";
 	})
-	.style("opacity", 0.3);
+	.style("opacity", 0.2);
 
 
 
