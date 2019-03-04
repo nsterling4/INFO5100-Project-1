@@ -15,11 +15,9 @@
     .y_gridlines .domain {
         stroke: none;
     }
-
     .gridlines .domain {
         stroke: none;
     }
-
     .y_gridlines line {
         stroke: #ccc;
     }
@@ -55,27 +53,18 @@
         <script>
             // let domC= "#AC7AC7";
             // let impC= "#40F1FB";
-
             let domC = "#179935";
             let impC = "#5C2AA6";
-
             //Bar Code
             let svg = d3.select("svg#plot");
             let width = svg.attr("width");
             let height = svg.attr("height");
-
-
             let svg2 = d3.select("svg#plot2");
             let width2 = svg2.attr("width");
             let height2 = svg2.attr("height");
-
-
             let svg3 = d3.select("svg#plot3");
             let width3 = svg3.attr("width");
             let height3 = svg3.attr("height");
-
-
-
             // This is a clever way to do padding that is more adjustable when you are designing
             let margin = {
                 "top": 80,
@@ -85,8 +74,6 @@
             };
             let chartWidth = width - margin.left - margin.right;
             let chartHeight = height - margin.top - margin.bottom;
-
-
             let margin2 = {
                 "top": 100,
                 "right": 100,
@@ -95,8 +82,6 @@
             };
             let chartWidth2 = width2 - margin2.left - margin2.right;
             let chartHeight2 = height2 - margin2.top - margin2.bottom;
-
-
             let margin3 = {
                 "top": 100,
                 "right": 100,
@@ -105,34 +90,23 @@
             };
             let chartWidth3 = width3 - margin3.left - margin3.right;
             let chartHeight3 = height3 - margin3.top - margin3.bottom;
-
-
             let data_array = d3.csv("combined.csv").then(function (data) {
-
                 // console.log(data);
                 // console.log(data.length);
-
                 data.forEach((d, i) => {
                     d["license"] = Number(d["Wholesaler License Serial Number"]);
                     d["lat"] = Number(d["Latitude"]);
                     d["long"] = Number(d["Longitude"]);
                 });
-
-
                 data = data.filter(d => d['lat'] != 0 && d['long'] != 0);
-
                 // console.log(data);
                 // console.log(data.length);
-
-
                 let drinks = d3.nest()
                     .key(d => d['License Class Description']).sortKeys(d3.ascending)
                     .key(d => d['Domestic or Imported'])
                     .rollup(l => l.length)
                     .entries(data);
                 //console.log(drinks);
-
-
                 let whiskey = d3.nest()
                     .key(d => d['License Class Description']).sortKeys(d3.ascending)
                     .key(d => d['Product Description']).sortKeys(d3.ascending)
@@ -140,10 +114,8 @@
                     .rollup(l => l.length)
                     .entries(data);
                 //  console.log(whiskey);
-
                 let whiskeys = whiskey[15]["values"];
                 //console.log(whiskeys);
-
                 makeAllKeys = function (d) {
                     return ["D", "I"];
                 };
@@ -163,11 +135,9 @@
                 });
                 //console.log(whiskeys);
                 //Adapted from https://stackoverflow.com/questions/53212959/cleaning-lower-levels-of-d3-nested-data
-
                 console.log(whiskey);
                 let beers = whiskey[11]["values"];
                 console.log(beers);
-
                 beers = beers.map(function (d) {
                     return {
                         key: d.key,
@@ -184,8 +154,6 @@
                 });
                 console.log(beers);
                 //Adapted from https://stackoverflow.com/questions/53212959/cleaning-lower-levels-of-d3-nested-data
-
-
                 //console.log(drinks);
                 // console.log(drinks["values"][0]["value"]);
                 //Scales
@@ -198,9 +166,6 @@
                 const drinkScale = d3.scaleLog() //Y Axis
                     .domain([1, drinkMax])
                     .range([chartHeight, 0]);
-
-
-
                 const whiskeyMin1 = d3.min(whiskeys, d => (d["values"][0]["value"]));
                 const whiskeyMin2 = d3.min(whiskeys, d => (d["values"][1]["value"]));
                 const whiskeyMin = Math.min(whiskeyMin1, whiskeyMin2);
@@ -210,9 +175,6 @@
                 const whiskeyScale = d3.scaleLog() //Y Axis
                     .domain([1, whiskeyMax])
                     .range([chartHeight2, 0]);
-
-
-
                 const beerMin1 = d3.min(beers, d => (d["values"][0]["value"]));
                 const beerMin2 = d3.min(beers, d => (d["values"][1]["value"]));
                 const beerMin = Math.min(beerMin1, beerMin2);
@@ -222,8 +184,6 @@
                 const beerScale = d3.scaleLog() //Y Axis
                     .domain([1, beerMax])
                     .range([chartHeight3, 0]);
-
-
                 const typeScale = d3.scaleLinear() //Y Axis
                     .domain([0, drinks.length - 1])
                     .range([0, chartWidth]);
@@ -233,10 +193,7 @@
                 const typeScale3 = d3.scaleLinear() //Y Axis
                     .domain([0, beers.length - 1])
                     .range([0, chartWidth3]);
-
                 const colorScale = d3.scaleOrdinal(d3.schemePaired);
-
-
                 //Axis
                 let yAxis = d3.axisLeft(drinkScale).ticks(12, d3.format(".01s")); // Y axis
                 svg.append("g")
@@ -245,7 +202,6 @@
                     .style("stroke-width", "2px")
                     .style("font-size", "15px")
                     .call(yAxis);
-
                 let yAxis2 = d3.axisLeft(whiskeyScale).ticks(12, d3.format(".01s")); // Y axis
                 svg2.append("g")
                     .attr("class", "y axis")
@@ -253,7 +209,6 @@
                     .style("stroke-width", "2px")
                     .style("font-size", "15px")
                     .call(yAxis2);
-
                 let yAxis3 = d3.axisLeft(beerScale).ticks(12, d3.format(".01s")); // Y axis
                 svg3.append("g")
                     .attr("class", "y axis")
@@ -261,8 +216,6 @@
                     .style("stroke-width", "2px")
                     .style("font-size", "15px")
                     .call(yAxis3);
-
-
                 let xAxis = d3.axisBottom(typeScale).tickFormat("").ticks(22).tickSize(10);
                 svg.append("g")
                     .attr("class", "x axis") // X axis
@@ -270,7 +223,6 @@
                         ")")
                     .style("stroke-width", "2px")
                     .call(xAxis);
-
                 let xAxis2 = d3.axisBottom(typeScale2).tickFormat("").ticks(14).tickSize(10);
                 svg2.append("g")
                     .attr("class", "x axis") // X axis
@@ -278,7 +230,6 @@
                         10) + ")")
                     .style("stroke-width", "2px")
                     .call(xAxis2);
-
                 let xAxis3 = d3.axisBottom(typeScale3).tickFormat("").ticks(10).tickSize(10);
                 svg3.append("g")
                     .attr("class", "x axis") // X axis
@@ -286,28 +237,22 @@
                         10) + ")")
                     .style("stroke-width", "2px")
                     .call(xAxis3);
-
-
                 //Gridlines
                 let yGridlines = d3.axisLeft(drinkScale).ticks(8).tickSize(-chartWidth - 80).tickFormat("");
                 svg.append("g")
                     .attr("class", "y_gridlines") // Y axis
                     .attr("transform", "translate(" + (margin.left - 30) + "," + margin.top + ")")
                     .call(yGridlines);
-
                 let yGridlines2 = d3.axisLeft(whiskeyScale).ticks(8).tickSize(-chartWidth2 - 70).tickFormat("");
                 svg2.append("g")
                     .attr("class", "y_gridlines") // Y axis
                     .attr("transform", "translate(" + (margin2.left - 30) + "," + margin2.top + ")")
                     .call(yGridlines2);
-
                 let yGridlines3 = d3.axisLeft(beerScale).ticks(8).tickSize(-chartWidth3 - 80).tickFormat("");
                 svg3.append("g")
                     .attr("class", "y_gridlines") // Y axis
                     .attr("transform", "translate(" + (margin3.left - 30) + "," + margin3.top + ")")
                     .call(yGridlines3);
-
-
                 let xGridlines = d3.axisBottom(typeScale).tickSize(35).tickFormat("").ticks(12);
                 svg.append("g")
                     .attr("class", "x gridlines") // X axis
@@ -315,7 +260,6 @@
                     .attr("transform", "translate(" + (margin.left + 108.5) + "," + (margin.top + chartHeight +
                         10) + ")")
                     .call(xGridlines);
-
                 let xGridlines2 = d3.axisBottom(typeScale2).tickSize(35).tickFormat("").ticks(7);
                 svg2.append("g")
                     .attr("class", "x gridlines") // X axis
@@ -324,8 +268,6 @@
                         chartHeight2 +
                         10) + ")")
                     .call(xGridlines2);
-
-
                 let barplot = svg.append("g")
                     .attr("transform", "translate(" + (margin.left + 20) + "," + margin.top + ")");
                 let barplot2 = svg2.append("g")
@@ -333,9 +275,6 @@
                 let barplot3 = svg3.append("g")
                     .attr("transform", "translate(" + (margin3.left + 20) + "," + margin3.top + ")");
                 // console.log(chartHeight);
-
-
-
                 drinks.forEach(function (d, i) {
                     //General Bar Graph
                     //Domestic
@@ -370,8 +309,6 @@
                         text.attr("y", chartHeight + 35)
                     }
                 });
-
-
                 console.log(whiskeys);
                 whiskeys.forEach(function (d, i) {
                     //Whiskey Bar Graph
@@ -407,12 +344,9 @@
                         text.attr("y", chartHeight2 + 35)
                     }
                 });
-
-
                 console.log(beers);
                 beers.forEach(function (d, i) {
                     //Beer Bar Graph
-
                     //Domestic
                     barplot3.append("line")
                         .attr("x1", typeScale3(i) - 15)
@@ -438,9 +372,6 @@
                         .attr("font-size", "15px")
                         .style("fill", "black");
                 });
-
-
-
                 //Legend
                 barplot.append("rect")
                     .attr("x", chartWidth - 185 + 30).attr("y", 0)
@@ -533,64 +464,39 @@
                     .attr("y", 60)
                     .attr("font-size", "50px");
             });
-
-
-
-
-
             //Map Code
             var width_MAP = 1000;
             var height_MAP = 800;
-
-
-
             var projection = d3.geoAlbersUsa()
                 .translate([-1350, 1150])
                 .scale([7000]);
-
             var path1 = d3.geoPath()
                 .projection(projection);
-
             var svg1_MAP = d3.select("#map1").select("#svg1");
-
             var svg2_MAP = d3.select("#map2").select("#svg2");
-
             var svg3_MAP = d3.select("#map3").select("#svg3");
             var projection2 = d3.geoAlbersUsa()
                 .translate([-1350, 1150])
                 .scale([7000]);
-
-
             var path2 = d3.geoPath()
                 .projection(projection2);
-
-
             var projection3 = d3.geoAlbersUsa()
                 .translate([-1350, 1150])
                 .scale([7000]);
-
-
             var path3 = d3.geoPath()
                 .projection(projection3);
-
             //var states = topojson.feature(us, us.objects.states);
-
             const requestData = async () => {
-
-                const json = await d3.json("us-states.json");
+                const json = await d3.json("newyork.json");
                 //var json = topojson.feature(json1, json1.objects.counties); 
                 //d3.json("us-states.json").then( function(json) {
                 // console.log(us);
                 // console.log(typeof(topojson.feature(us, us.objects.states)));
                 // var json = topojson.feature(us, us.objects.counties); 
-
-
                 // svg1.append("path")
                 //       .datum(topojson.mesh(json1, json1.objects.json))
                 //       .attr("class","outline")
                 //       .attr("d", path);
-
-
                 svg1_MAP.selectAll("path")
                     .data(json.features)
                     .enter()
@@ -599,9 +505,6 @@
                     .style("stroke", "#fff")
                     .style("stroke-width", "1")
                     .style("fill", "rgb(213,222,217)");
-
-
-
                 svg2_MAP
                     .selectAll("path")
                     .data(json.features)
@@ -611,7 +514,6 @@
                     .style("stroke", "#fff")
                     .style("stroke-width", "1")
                     .style("fill", "rgb(213,222,217)");
-
                 svg3_MAP
                     .selectAll("path")
                     .data(json.features)
@@ -621,26 +523,15 @@
                     .style("stroke", "#fff")
                     .style("stroke-width", "1")
                     .style("fill", "rgb(213,222,217)");
-
-
-
-
-
-
-
-
                 d3.csv("combined.csv").then(function (data) {
                     console.log(data);
-
                     data = data.filter(d => Boolean(projection([d.Longitude, d.Latitude])));
                     if (projection([data[0].Longitude, data[0].Latitude]) != null)
-
                         svg1_MAP.selectAll("circle")
                         .data(data)
                         .enter()
                         .append("circle")
                         .attr("cx", function (d) {
-
                             return Math.floor(projection([d.Longitude, d.Latitude])[0] + ((Math.random() *
                                 10) - 5));
                         })
@@ -650,26 +541,20 @@
                         })
                         .attr("r", 3)
                         .style("fill", function (d) {
-
                             if (d["Domestic or Imported"] == "D") {
                                 return domC;
                             } else
                                 return impC;
                         })
                         .style("opacity", 0.2);
-
-
                     data2 = data.filter(d => Boolean(d["License Class Description"] == "WHISKEY"));
                     data3 = data.filter(d => Boolean(d["License Class Description"] == "NO FEE BEER"));
-
-
                     console.log(data2);
                     svg2_MAP.selectAll("circle")
                         .data(data2)
                         .enter()
                         .append("circle")
                         .attr("cx", function (d) {
-
                             return Math.floor(projection([d.Longitude, d.Latitude])[0] + ((Math.random() *
                                 10) - 5));
                         })
@@ -679,21 +564,17 @@
                         })
                         .attr("r", 3)
                         .style("fill", function (d) {
-
                             if (d["Domestic or Imported"] == "D") {
                                 return domC;
                             } else
                                 return impC;
                         })
                         .style("opacity", 0.2);
-
-
                     svg3_MAP.selectAll("circle")
                         .data(data3)
                         .enter()
                         .append("circle")
                         .attr("cx", function (d) {
-
                             return Math.floor(projection([d.Longitude, d.Latitude])[0] + ((Math.random() *
                                 8) - 4));
                         })
@@ -703,28 +584,21 @@
                         })
                         .attr("r", 3)
                         .style("fill", function (d) {
-
                             if (d["Domestic or Imported"] == "D") {
                                 return domC;
                             } else
                                 return impC;
                         })
                         .style("opacity", 0.2);
-
-
-
-
                     var title1 = "Distribution of Alcohol Licenses across NY State";
                     var title2 = "Distribution of Alcohol Licenses for the Whiskey License Class";
                     var title3 = "Distribution of Alcohol Licenses for the No Fee Beer License Class";
-
                     svg1_MAP.append("text")
                         .attr("class", "name")
                         .text(title1)
                         .attr("x", width_MAP / 2 - title.length * 10)
                         .attr("y", 60)
                         .attr("font-size", "40px");
-
                     svg1_MAP.append("rect")
                         .attr("x", 30).attr("y", 680)
                         .attr("width", "185").attr("height", "100")
@@ -743,7 +617,6 @@
                         .text("Imported")
                         .attr("x", 125).attr("y", 760)
                         .attr("font-size", "20px");
-
                     // svg1_MAP.append("circle")
                     // 	.attr("cx", width_MAP / 3 * 2)
                     // 	.attr("cy", height_MAP / 3 * 2)
@@ -762,14 +635,12 @@
                     // 	.attr("x", width_MAP / 3 * 2 - 7)
                     // 	.attr("y", height_MAP / 3 * 2 + 45)
                     // 	.text("Imported");
-
                     svg2_MAP.append("text")
                         .attr("class", "name")
                         .text(title2)
                         .attr("x", width_MAP / 2 - title.length * 12)
                         .attr("y", 60)
                         .attr("font-size", "37px");
-
                         svg2_MAP.append("rect")
                         .attr("x", 30).attr("y", 680)
                         .attr("width", "185").attr("height", "100")
@@ -788,7 +659,6 @@
                         .text("Imported")
                         .attr("x", 125).attr("y", 760)
                         .attr("font-size", "20px");
-
                     // svg2_MAP.append("circle")
                     //  	  .attr("cx",width_MAP-20)
                     //  	  .attr("cy",height_MAP/3*2)
@@ -807,14 +677,12 @@
                     // 	 .attr("x",width-50)
                     // 	 .attr("y",height/3*2+45)
                     // 	 .text("Imported");
-
                     svg3_MAP.append("text")
                         .attr("class", "name")
                         .text(title3)
                         .attr("x", width_MAP / 2 - title.length * 12.8)
                         .attr("y", 60)
                         .attr("font-size", "36px");
-
                         svg3_MAP.append("rect")
                         .attr("x", 30).attr("y", 680)
                         .attr("width", "185").attr("height", "100")
@@ -833,14 +701,8 @@
                         .text("Imported")
                         .attr("x", 125).attr("y", 760)
                         .attr("font-size", "20px");
-
-
                 });
-
-
-
             };
-
             requestData();
         </script>
     </div>
