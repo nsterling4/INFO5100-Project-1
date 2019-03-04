@@ -1,307 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/default.min.css">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="https://d3js.org/topojson.v2.min.js"></script>
-<!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
-<style type="text/css">
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/default.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://d3js.org/topojson.v2.min.js"></script>
+	<!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+	<style type="text/css">
+		/* On mouse hover, lighten state color */
+		path:hover {
+			fill-opacity: .7;
+		}
 
-/* On mouse hover, lighten state color */
-path:hover {
-	fill-opacity: .7;
-}
+		/* Style for Custom Tooltip */
+		div.tooltip {
+			position: absolute;
+			text-align: center;
+			width: 60px;
+			height: 28px;
+			padding: 2px;
+			font: 12px sans-serif;
+			background: white;
+			border: 0px;
+			border-radius: 8px;
+			pointer-events: none;
+		}
 
-/* Style for Custom Tooltip */
-div.tooltip {   
- 	position: absolute;           
-	text-align: center;           
-	width: 60px;                  
-	height: 28px;                 
-	padding: 2px;             
-	font: 12px sans-serif;        
-	background: white;   
-	border: 0px;      
-	border-radius: 8px;           
-	pointer-events: none;         
-}
-        
-/* Legend Font Style */
-body {
-	font: 11px sans-serif;
-}
-        
-/* Legend Position Style */
-.legend {
-	position:absolute;
-	left:800px;
-	top:350px;
-}
+		/* Legend Font Style */
+		body {
+			font: 11px sans-serif;
+		}
 
-</style>
+		/* Legend Position Style */
+		.legend {
+			position: absolute;
+			left: 800px;
+			top: 350px;
+		}
+	</style>
 </head>
+
 <body>
-<div id="map1">
-	<svg id="svg1" width="1000" height="500"></svg>
-</div>
-<div id="map2">
-	<svg id="svg2" width="500" height="500"></svg>
-	<svg id="svg3" width="500" height="500"></svg>
-</div>
-<div id="map3">
-	
-	
-</div>
-<!-- <div id="g1"></div>
+	<div id="map1">
+		<svg id="svg1" width="1000" height="500"></svg>
+	</div>
+	<div id="map2">
+		<svg id="svg2" width="500" height="500"></svg>
+		<svg id="svg3" width="500" height="500"></svg>
+	</div>
+	<div id="map3">
+
+
+	</div>
+	<!-- <div id="g1"></div>
 <div id="g2"></div> -->
-<p id="p1">
-<script type="text/javascript">
-
-var width = 1000;
-var height = 500;
-
+	<p id="p1">
+		<script type="text/javascript">
+			var width = 1000;
+			var height = 500;
 
 
-var projection = d3.geoAlbersUsa()
-				   .translate([-600, 700])    
-				   .scale([3500]);         
-        
-var path1 = d3.geoPath()               
-		  	 .projection(projection);  
 
-var svg1 = d3.select("#map1").select("#svg1");
+			var projection = d3.geoAlbersUsa()
+				.translate([-600, 700])
+				.scale([3500]);
 
-var svg2 = d3.select("#map2").select("#svg2");
+			var path1 = d3.geoPath()
+				.projection(projection);
 
-var svg3 = d3.select("#map2").select("#svg3");
-var projection2 = d3.geoAlbersUsa()
-				   .translate([-600, 700])    
-				   .scale([3500]);          
-        
+			var svg1 = d3.select("#map1").select("#svg1");
 
-var path2 = d3.geoPath()               
-		  	 .projection(projection2);  
+			var svg2 = d3.select("#map2").select("#svg2");
+
+			var svg3 = d3.select("#map2").select("#svg3");
+			var projection2 = d3.geoAlbersUsa()
+				.translate([-600, 700])
+				.scale([3500]);
 
 
-var projection3 = d3.geoAlbersUsa()
-				   .translate([-600, 700])    
-				   .scale([3500]);          
-        
-
-var path3 = d3.geoPath()               
-		  	 .projection(projection3);  
-     
-//var states = topojson.feature(us, us.objects.states);
-
-const requestData = async () => {
-
-const json = await d3.json("us-states.json");
-//var json = topojson.feature(json1, json1.objects.counties); 
-//d3.json("us-states.json").then( function(json) {
-// console.log(us);
-// console.log(typeof(topojson.feature(us, us.objects.states)));
-// var json = topojson.feature(us, us.objects.counties); 
+			var path2 = d3.geoPath()
+				.projection(projection2);
 
 
-// svg1.append("path")
-//       .datum(topojson.mesh(json1, json1.objects.json))
-//       .attr("class","outline")
-//       .attr("d", path);
+			var projection3 = d3.geoAlbersUsa()
+				.translate([-600, 700])
+				.scale([3500]);
 
 
-svg1.selectAll("path")
-	.data(json.features)
-	.enter()
-	.append("path")
-	.attr("d", path1)
-	.style("stroke", "#fff")
-	.style("stroke-width", "1")
-	.style("fill", "rgb(213,222,217)");
+			var path3 = d3.geoPath()
+				.projection(projection3);
+
+			//var states = topojson.feature(us, us.objects.states);
+
+			const requestData = async () => {
+
+				const json = await d3.json("us-states.json");
+				//var json = topojson.feature(json1, json1.objects.counties); 
+				//d3.json("us-states.json").then( function(json) {
+				// console.log(us);
+				// console.log(typeof(topojson.feature(us, us.objects.states)));
+				// var json = topojson.feature(us, us.objects.counties); 
 
 
-    
-	svg2
-	.selectAll("path")
-	.data(json.features)
-	.enter()
-	.append("path")
-	.attr("d", path2)
-	.style("stroke", "#fff")
-	.style("stroke-width", "1")
-	.style("fill", "rgb(213,222,217)");
-
-	svg3
-	.selectAll("path")
-	.data(json.features)
-	.enter()
-	.append("path")
-	.attr("d", path3)
-	.style("stroke", "#fff")
-	.style("stroke-width", "1")
-	.style("fill", "rgb(213,222,217)");
+				// svg1.append("path")
+				//       .datum(topojson.mesh(json1, json1.objects.json))
+				//       .attr("class","outline")
+				//       .attr("d", path);
 
 
- 
+				svg1.selectAll("path")
+					.data(json.features)
+					.enter()
+					.append("path")
+					.attr("d", path1)
+					.style("stroke", "#fff")
+					.style("stroke-width", "1")
+					.style("fill", "rgb(213,222,217)");
+
+
+
+				svg2
+					.selectAll("path")
+					.data(json.features)
+					.enter()
+					.append("path")
+					.attr("d", path2)
+					.style("stroke", "#fff")
+					.style("stroke-width", "1")
+					.style("fill", "rgb(213,222,217)");
+
+				svg3
+					.selectAll("path")
+					.data(json.features)
+					.enter()
+					.append("path")
+					.attr("d", path3)
+					.style("stroke", "#fff")
+					.style("stroke-width", "1")
+					.style("fill", "rgb(213,222,217)");
 
 
 
 
 
-	d3.csv("combined.csv").then( function(data) {
-		console.log(data);
-
-	data = data.filter(d=>Boolean(projection([d.Longitude,d.Latitude])));
-	if(projection([data[0].Longitude,data[0].Latitude])!=null)
-
-	svg1.selectAll("circle")
-	.data(data)
-	.enter()
-	.append("circle")
-	.attr("cx", function(d) {
-		
-		return Math.floor(projection([d.Longitude, d.Latitude])[0]+((Math.random() * 8) - 4));
-	})
-	.attr("cy", function(d) {
-		return Math.floor(projection([d.Longitude, d.Latitude])[1]+((Math.random() * 8) - 4));
-	})
-	.attr("r",1)
-	.style("fill", function(d){
-
-		if(d["Domestic or Imported"]=="D"){
-			return "green";
-		}else
-			return "rgb(217,91,67)";
-	})
-	.style("opacity", 0.1);
-
-
-	data2 = data.filter(d=>Boolean(d["License Class Description"]=="WHISKEY"));
-	data3 = data.filter(d=>Boolean(d["License Class Description"]=="NO FEE BEER"));
-
-	
-console.log(data2);
-	svg2.selectAll("circle")
-	.data(data2)
-	.enter()
-	.append("circle")
-	.attr("cx", function(d) {
-		
-		return Math.floor(projection([d.Longitude, d.Latitude])[0]+((Math.random() * 8) - 4));
-	})
-	.attr("cy", function(d) {
-		return Math.floor(projection([d.Longitude, d.Latitude])[1]+((Math.random() * 8) - 4));
-	})
-	.attr("r",1)
-	.style("fill", function(d){
-
-		if(d["Domestic or Imported"]=="D"){
-			return "green";
-		}else
-			return "rgb(217,91,67)";
-	})
-	.style("opacity", 0.2);
-
-	
-	svg3.selectAll("circle")
-	.data(data3)
-	.enter()
-	.append("circle")
-	.attr("cx", function(d) {
-		
-		return Math.floor(projection([d.Longitude, d.Latitude])[0]+((Math.random() * 8) - 4));
-	})
-	.attr("cy", function(d) {
-		return Math.floor(projection([d.Longitude, d.Latitude])[1]+((Math.random() * 8) - 4));
-	})
-	.attr("r",1)
-	.style("fill", function(d){
-
-		if(d["Domestic or Imported"]=="D"){
-			return "green";
-		}else
-			return "rgb(217,91,67)";
-	})
-	.style("opacity", 0.2);
 
 
 
+				d3.csv("combined.csv").then(function (data) {
+					console.log(data);
 
-  var title1 = "Domestic and Imported distribution for Alcohol Licenses over the NY State";
-  var title2 = "Domestic and Imported distribution for Whiskey License Class"; 
-  var title3 = "Domestic and Imported distribution for NO FEE BEER License Class"; 
+					data = data.filter(d => Boolean(projection([d.Longitude, d.Latitude])));
+					if (projection([data[0].Longitude, data[0].Latitude]) != null)
 
-   svg1.append("text")
-      .attr("class", "name")
-      .text(title1)
-      .attr("x", width / 10 )
-      .attr("y", 120)
-      .attr("font-size", "12px");
+						svg1.selectAll("circle")
+						.data(data)
+						.enter()
+						.append("circle")
+						.attr("cx", function (d) {
 
-  svg1.append("circle")
-  	  .attr("cx",width/3*2)
-  	  .attr("cy",height/3*2)
-  	  .attr("r",5)
-  	  .style("fill","green");
-  svg1.append("text")
-  	 .attr("x",width/3*2-7)
-  	 .attr("y",height/3*2+15)
-  	 .text("Domestic");
-  svg1.append("circle")
-  	  .attr("cx",width/3*2)
-  	  .attr("cy",height/3*2+30)
-  	  .attr("r",5)
-  	  .style("fill","rgb(217,91,67)");
-  svg1.append("text")
-  	 .attr("x",width/3*2-7)
-  	 .attr("y",height/3*2+45)
-  	 .text("Imported");
+							return Math.floor(projection([d.Longitude, d.Latitude])[0] + ((Math.random() * 8) - 4));
+						})
+						.attr("cy", function (d) {
+							return Math.floor(projection([d.Longitude, d.Latitude])[1] + ((Math.random() * 8) - 4));
+						})
+						.attr("r", 1)
+						.style("fill", function (d) {
 
- svg2.append("text")
-      .attr("class", "name")
-      .text(title2)
-      .attr("x", width / 20 )
-      .attr("y", 120)
-      .attr("font-size", "12px");
+							if (d["Domestic or Imported"] == "D") {
+								return "green";
+							} else
+								return "rgb(217,91,67)";
+						})
+						.style("opacity", 0.1);
 
- // svg2.append("circle")
- //  	  .attr("cx",width-20)
- //  	  .attr("cy",height/3*2)
- //  	  .attr("r",5)
-  	  // .style("fill","green");
- // svg2.append("text")
- //  	 .attr("x",width-50)
- //  	 .attr("y",height/3*2+15)
- //  	 .text("Domestic");
- // svg2.append("circle")
- //  	  .attr("cx",width-20)
- //  	  .attr("cy",height/3*2+30)
- //  	  .attr("r",5)
- //  	  .style("fill","rgb(217,91,67)");
-  // svg2.append("text")
-  // 	 .attr("x",width-50)
-  // 	 .attr("y",height/3*2+45)
-  // 	 .text("Imported");
 
- svg3.append("text")
-      .attr("class", "name")
-      .text(title3)
-      .attr("x", width / 20 )
-      .attr("y", 120)
-      .attr("font-size", "12px");
+					data2 = data.filter(d => Boolean(d["License Class Description"] == "WHISKEY"));
+					data3 = data.filter(d => Boolean(d["License Class Description"] == "NO FEE BEER"));
 
- 
-	});
 
-//});
+					console.log(data2);
+					svg2.selectAll("circle")
+						.data(data2)
+						.enter()
+						.append("circle")
+						.attr("cx", function (d) {
 
-};
+							return Math.floor(projection([d.Longitude, d.Latitude])[0] + ((Math.random() * 8) - 4));
+						})
+						.attr("cy", function (d) {
+							return Math.floor(projection([d.Longitude, d.Latitude])[1] + ((Math.random() * 8) - 4));
+						})
+						.attr("r", 1)
+						.style("fill", function (d) {
 
-  requestData();
+							if (d["Domestic or Imported"] == "D") {
+								return "green";
+							} else
+								return "rgb(217,91,67)";
+						})
+						.style("opacity", 0.2);
 
-</script>
+
+					svg3.selectAll("circle")
+						.data(data3)
+						.enter()
+						.append("circle")
+						.attr("cx", function (d) {
+
+							return Math.floor(projection([d.Longitude, d.Latitude])[0] + ((Math.random() * 8) - 4));
+						})
+						.attr("cy", function (d) {
+							return Math.floor(projection([d.Longitude, d.Latitude])[1] + ((Math.random() * 8) - 4));
+						})
+						.attr("r", 1)
+						.style("fill", function (d) {
+
+							if (d["Domestic or Imported"] == "D") {
+								return "green";
+							} else
+								return "rgb(217,91,67)";
+						})
+						.style("opacity", 0.2);
+
+
+
+
+					var title1 = "Domestic and Imported distribution for Alcohol Licenses over the NY State";
+					var title2 = "Domestic and Imported distribution for Whiskey License Class";
+					var title3 = "Domestic and Imported distribution for NO FEE BEER License Class";
+
+					svg1.append("text")
+						.attr("class", "name")
+						.text(title1)
+						.attr("x", width / 10)
+						.attr("y", 120)
+						.attr("font-size", "12px");
+
+					svg1.append("circle")
+						.attr("cx", width / 3 * 2)
+						.attr("cy", height / 3 * 2)
+						.attr("r", 5)
+						.style("fill", "green");
+					svg1.append("text")
+						.attr("x", width / 3 * 2 - 7)
+						.attr("y", height / 3 * 2 + 15)
+						.text("Domestic");
+					svg1.append("circle")
+						.attr("cx", width / 3 * 2)
+						.attr("cy", height / 3 * 2 + 30)
+						.attr("r", 5)
+						.style("fill", "rgb(217,91,67)");
+					svg1.append("text")
+						.attr("x", width / 3 * 2 - 7)
+						.attr("y", height / 3 * 2 + 45)
+						.text("Imported");
+
+					svg2.append("text")
+						.attr("class", "name")
+						.text(title2)
+						.attr("x", width / 20)
+						.attr("y", 120)
+						.attr("font-size", "12px");
+
+					// svg2.append("circle")
+					//  	  .attr("cx",width-20)
+					//  	  .attr("cy",height/3*2)
+					//  	  .attr("r",5)
+					// .style("fill","green");
+					// svg2.append("text")
+					//  	 .attr("x",width-50)
+					//  	 .attr("y",height/3*2+15)
+					//  	 .text("Domestic");
+					// svg2.append("circle")
+					//  	  .attr("cx",width-20)
+					//  	  .attr("cy",height/3*2+30)
+					//  	  .attr("r",5)
+					//  	  .style("fill","rgb(217,91,67)");
+					// svg2.append("text")
+					// 	 .attr("x",width-50)
+					// 	 .attr("y",height/3*2+45)
+					// 	 .text("Imported");
+
+					svg3.append("text")
+						.attr("class", "name")
+						.text(title3)
+						.attr("x", width / 20)
+						.attr("y", 120)
+						.attr("font-size", "12px");
+
+
+				});
+
+
+
+			};
+
+			requestData();
+		</script>
 
 </body>
-</html>
 
+</html>
