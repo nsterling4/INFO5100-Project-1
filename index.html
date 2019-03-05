@@ -21,12 +21,16 @@
     .y_gridlines line {
         stroke: #ccc;
     }
+
+    h1 {
+        font-size: 60px;
+    }
 </style>
 
 <body>
     <div>
 
-        <h2 style="text-align: center;">Project 1</h2>
+        <h1 style="text-align: center;">Analysis of Alcohol Licenses for the State of New York</h1>
 
         <!-- Bar Charts -->
         <svg id="plot" height="800" width="1800" style="border: 1px black solid; background-color: antiquewhite; float: left; margin-bottom: 20px">
@@ -113,8 +117,8 @@
                     .key(d => d['Domestic or Imported'])
                     .rollup(l => l.length)
                     .entries(data);
-                //  console.log(whiskey);
-                let whiskeys = whiskey[15]["values"];
+                 console.log(whiskey);
+                let whiskeys = whiskey[12]["values"];
                 //console.log(whiskeys);
                 makeAllKeys = function (d) {
                     return ["D", "I"];
@@ -136,7 +140,7 @@
                 //console.log(whiskeys);
                 //Adapted from https://stackoverflow.com/questions/53212959/cleaning-lower-levels-of-d3-nested-data
                 console.log(whiskey);
-                let beers = whiskey[11]["values"];
+                let beers = whiskey[0]["values"];
                 console.log(beers);
                 beers = beers.map(function (d) {
                     return {
@@ -166,6 +170,9 @@
                 const drinkScale = d3.scaleLog() //Y Axis
                     .domain([1, drinkMax])
                     .range([chartHeight, 0]);
+
+                    console.log(drinkMin);
+                    console.log(drinkMax);
                 const whiskeyMin1 = d3.min(whiskeys, d => (d["values"][0]["value"]));
                 const whiskeyMin2 = d3.min(whiskeys, d => (d["values"][1]["value"]));
                 const whiskeyMin = Math.min(whiskeyMin1, whiskeyMin2);
@@ -216,7 +223,7 @@
                     .style("stroke-width", "2px")
                     .style("font-size", "15px")
                     .call(yAxis3);
-                let xAxis = d3.axisBottom(typeScale).tickFormat("").ticks(22).tickSize(10);
+                let xAxis = d3.axisBottom(typeScale).tickFormat("").ticks(14).tickSize(10);
                 svg.append("g")
                     .attr("class", "x axis") // X axis
                     .attr("transform", "translate(" + (margin.left + 20) + "," + (margin.top + chartHeight + 10) +
@@ -253,11 +260,11 @@
                     .attr("class", "y_gridlines") // Y axis
                     .attr("transform", "translate(" + (margin3.left - 30) + "," + margin3.top + ")")
                     .call(yGridlines3);
-                let xGridlines = d3.axisBottom(typeScale).tickSize(35).tickFormat("").ticks(12);
+                let xGridlines = d3.axisBottom(typeScale).tickSize(35).tickFormat("").ticks(7);
                 svg.append("g")
                     .attr("class", "x gridlines") // X axis
                     .style("stroke-width", "2px")
-                    .attr("transform", "translate(" + (margin.left + 108.5) + "," + (margin.top + chartHeight +
+                    .attr("transform", "translate(" + (margin.left + 142.2) + "," + (margin.top + chartHeight +
                         10) + ")")
                     .call(xGridlines);
                 let xGridlines2 = d3.axisBottom(typeScale2).tickSize(35).tickFormat("").ticks(7);
@@ -456,7 +463,7 @@
                     .attr("y", chartHeight3 + margin3.bottom - 20)
                     .attr("font-style", "italic")
                     .attr("font-size", "20px");
-                title3 = "Alcohol Licenses for the No Fee Beer License Class";
+                title3 = "Alcohol Licenses for the Beer & Lager License Class";
                 svg3.append("text")
                     .attr("class", "name")
                     .text(title3)
@@ -548,7 +555,7 @@
                         })
                         .style("opacity", 0.2);
                     data2 = data.filter(d => Boolean(d["License Class Description"] == "WHISKEY"));
-                    data3 = data.filter(d => Boolean(d["License Class Description"] == "NO FEE BEER"));
+                    data3 = data.filter(d => Boolean(d["License Class Description"] == "BEER & LAGER"));
                     console.log(data2);
                     svg2_MAP.selectAll("circle")
                         .data(data2)
@@ -592,7 +599,7 @@
                         .style("opacity", 0.2);
                     var title1 = "Distribution of Alcohol Licenses across NY State";
                     var title2 = "Distribution of Alcohol Licenses for the Whiskey License Class";
-                    var title3 = "Distribution of Alcohol Licenses for the No Fee Beer License Class";
+                    var title3 = "Distribution of Alcohol Licenses for the Beer & Lager License Class";
                     svg1_MAP.append("text")
                         .attr("class", "name")
                         .text(title1)
@@ -638,7 +645,7 @@
                     svg2_MAP.append("text")
                         .attr("class", "name")
                         .text(title2)
-                        .attr("x", width_MAP / 2 - title.length * 12)
+                        .attr("x", width_MAP / 2 - title.length * 12.4)
                         .attr("y", 60)
                         .attr("font-size", "37px");
                         svg2_MAP.append("rect")
@@ -682,7 +689,7 @@
                         .text(title3)
                         .attr("x", width_MAP / 2 - title.length * 12.8)
                         .attr("y", 60)
-                        .attr("font-size", "36px");
+                        .attr("font-size", "35px");
                         svg3_MAP.append("rect")
                         .attr("x", 30).attr("y", 680)
                         .attr("width", "185").attr("height", "100")
